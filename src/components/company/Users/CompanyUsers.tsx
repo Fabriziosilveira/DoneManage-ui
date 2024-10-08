@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,26 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserPlus } from "lucide-react";
+import { Search } from "lucide-react";
 import { employees } from "@/data/employees";
 import { FormatLogoIfNoImage } from "../../../../utils/Formataion";
+import InviteEmployee from "./InviteEmployee/InviteEmployee";
 
 export default function CompanyUsers() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  
+  
 
   const filteredEmployees = employees.filter(
     (employee) =>
@@ -39,14 +29,6 @@ export default function CompanyUsers() {
       employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleInvite = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically send the invitation to the backend
-    console.log(`Invitation sent to ${inviteEmail}`);
-    setInviteEmail("");
-    setIsInviteDialogOpen(false);
-  };
 
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
@@ -69,45 +51,8 @@ export default function CompanyUsers() {
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
 
-            <Dialog
-              open={isInviteDialogOpen}
-              onOpenChange={setIsInviteDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button className="bg-[#111111] text-[#FFFFFF] font-medium">
-                  <UserPlus className="mr-2 h-4 w-4 text-[#FFFFFF]" /> 
-                  Convidar Membro
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Convidar Novo Membro</DialogTitle>
-                  <DialogDescription>
-                    Envie um convite para um novo membro se juntar à equipe.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleInvite}>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="email" className="text-right">
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={inviteEmail}
-                        onChange={(e) => setInviteEmail(e.target.value)}
-                        className="col-span-3"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button className="bg-[#111111] text-[#FFFFFF]" type="submit">Enviar Convite</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <InviteEmployee />
+
           </div>
 
           <div className="bg-white shadow rounded-lg overflow-hidden">

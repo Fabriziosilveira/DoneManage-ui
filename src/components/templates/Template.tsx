@@ -10,7 +10,7 @@ import NotificationPanel from "../Notification/NotificationPanel"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { Bell, ChevronDown, Cog, Search, Users } from "lucide-react"
 import CompanyUsers from "../company/Users/CompanyUsers"
-import SalesOrderCreation from "../company/modules/Sales/Sales-Orders/SalesOrdersCreation"
+//import SalesOrderCreation from "../company/modules/Sales/Sales-Orders/SalesOrdersCreation"
 import CompanyConfig from "../company/Config/Company-Config"
 import Dashboard from "../company/Dashboard/DashBoard"
 
@@ -32,7 +32,7 @@ export default function Template() {
       case "Company-users":
         return <CompanyUsers />;
       case "Sales-Orders":
-        return //<SalesOrderCreation />
+        return ;
       case "Company-Config":
         return <CompanyConfig />
       default:

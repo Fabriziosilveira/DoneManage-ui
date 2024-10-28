@@ -32,7 +32,7 @@ export default function Template() {
       case "Company-users":
         return <CompanyUsers />;
       case "Sales-Orders":
-        return <SalesOrderCreation />
+        return //<SalesOrderCreation />
       case "Company-Config":
         return <CompanyConfig />
       default:

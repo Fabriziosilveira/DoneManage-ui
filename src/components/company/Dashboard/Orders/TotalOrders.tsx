@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "../../../ui/checkbox";
 import {
   Select,
@@ -32,21 +32,30 @@ import {
   TableRow,
 } from "../../../ui/table";
 import { Badge } from "../../../ui/badge";
-import { orders } from "@/data/orders";
+import { motion } from 'framer-motion';
+import { getBadgeClass } from "../../../../../utils/BadgesClass";
+import { fetchDummyData, Order } from "@/data/orders";
+
 
 export default function TotalOrders() {
-
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(6);
+  const [paginatedOrders, setPaginatedOrders] = useState(() => fetchDummyData(currentPage, pageSize));
+
+  useEffect(() => {
+    const paginatedData = fetchDummyData(currentPage, pageSize);
+    setPaginatedOrders(paginatedData);
+  }, [currentPage, pageSize]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedOrders(orders.map((order) => order.id)); // Seleciona todos os pedidos
+      setSelectedOrders(paginatedOrders.data.map((order: Order) => order.id)); // Seleciona todos os pedidos na página atual
     } else {
       setSelectedOrders([]); // Desmarca todos
     }
   };
 
-  // Função para selecionar/desmarcar um pedido individual
   const handleSelectOrder = (orderId: string, checked: boolean) => {
     setSelectedOrders((prevSelected) => {
       if (checked) {
@@ -57,38 +66,17 @@ export default function TotalOrders() {
     });
   };
 
-  // Verifica se todos os pedidos estão selecionados
-  const isAllSelected = selectedOrders.length === orders.length;
+  const isAllSelected = selectedOrders.length === paginatedOrders.data.length;
 
   return (
-    
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-        <div className="ml-6 mr-6 bg-white shadow rounded-lg">
-          <h1 className="ml-6 mr-6 pl-8 pt-5 pb-2 text-2xl text-[#1C1C1C] font-semibold ">Pedidos Recentes</h1>
-          <p className="ml-6 mr-6 pl-8 pb-8 text-sm text-[#9FA1A6]">
-            You are viewing the total number of orders placed so far
-          </p>
-
-          <div className="pl-8 mb-4">
-            <nav className="flex space-x-4" aria-label="Tabs">
-              {[
-                "Total Orders",
-                "Pending Orders",
-                "Approved Orders",
-                "Completed Orders",
-                "Canceled Orders",
-                "Returned Orders",
-              ].map((tab, index) => (
-                <Button
-                  key={tab}
-                  variant={index === 2 ? "default" : "ghost"}
-                  className={index === 2 ? "text-blue-600" : "text-gray-500"}
-                >
-                  {tab}
-                </Button>
-              ))}
-            </nav>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto py-6 px-4 sm:px-6 lg:px-8"
+    >
+      <main className="flex-1 overflow-x-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+        <div className="bg-white shadow rounded-lg">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
             <div className="flex items-center">
               <Checkbox
@@ -101,15 +89,15 @@ export default function TotalOrders() {
               </label>
             </div>
             <div className="flex items-center space-x-0">
-              <Select defaultValue="last30" >
+              <Select defaultValue="last30">
                 <SelectTrigger className="w-52">
                   <Calendar className="text-[#969696] w-[16.67] h-[18.33]" />
                   <SelectValue placeholder="Select period" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="last30">Ultimos 30 dias</SelectItem>
-                  <SelectItem value="last60">Ultimos 60 dias</SelectItem>
-                  <SelectItem value="last90">Ultimos 90 dias</SelectItem>
+                  <SelectItem value="last30">Últimos 30 dias</SelectItem>
+                  <SelectItem value="last60">Últimos 60 dias</SelectItem>
+                  <SelectItem value="last90">Últimos 90 dias</SelectItem>
                 </SelectContent>
               </Select>
               <div className="h-8 w-8 p-0">
@@ -144,7 +132,7 @@ export default function TotalOrders() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.map((order) => (
+              {paginatedOrders.data.map((order: Order) => (
                 <TableRow key={order.id}>
                   <TableCell>
                     <Checkbox
@@ -159,7 +147,7 @@ export default function TotalOrders() {
                   <TableCell>
                     <Badge
                       variant="secondary"
-                      className="bg-blue-100 text-blue-800"
+                      className={getBadgeClass(order.status)}
                     >
                       {order.status}
                     </Badge>
@@ -167,7 +155,7 @@ export default function TotalOrders() {
                   <TableCell>
                     <Badge
                       variant="secondary"
-                      className="bg-green-100 text-green-800"
+                      className={getBadgeClass(order.inventory)}
                     >
                       {order.inventory}
                     </Badge>
@@ -206,18 +194,28 @@ export default function TotalOrders() {
             </TableBody>
           </Table>
           <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-500">Page 1 of 4</div>
+            <div className="text-sm text-gray-500">Page {paginatedOrders.currentPage} of {paginatedOrders.totalPages}</div>
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, paginatedOrders.totalPages))}
+                disabled={currentPage === paginatedOrders.totalPages}
+              >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </main>
-    
+    </motion.div>
   );
 }

@@ -9,8 +9,10 @@ import React, { useState } from "react"
 import NotificationPanel from "../Notification/NotificationPanel"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { Bell, ChevronDown, Cog, Search, Users } from "lucide-react"
-import Dashboard from "../company/Dashboard/GeneralDashboard"
 import CompanyUsers from "../company/Users/CompanyUsers"
+import SalesOrderCreation from "../company/modules/Sales/Sales-Orders/SalesOrdersCreation"
+import CompanyConfig from "../company/Config/Company-Config"
+import Dashboard from "../company/Dashboard/DashBoard"
 
 const userImageURL = "";
 const userName = "Test";
@@ -29,6 +31,10 @@ export default function Template() {
         return <Dashboard />;
       case "Company-users":
         return <CompanyUsers />;
+      case "Sales-Orders":
+        return <SalesOrderCreation />
+      case "Company-Config":
+        return <CompanyConfig />
       default:
         return <Dashboard />;
     }
@@ -63,13 +69,13 @@ export default function Template() {
             </li>
             <li>
               <Button variant="ghost" className="w-full justify-start" 
-              onClick={() => setSelectedComponent("Orders")}>
+              onClick={() => setSelectedComponent("Sales-Orders")}>
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
                 Orders  
               </Button>
-            </li>
+            </li> 
             <li>
               <Button variant="ghost" className="w-full justify-start" 
               onClick={() => setSelectedComponent("Requests")}>
@@ -113,7 +119,8 @@ export default function Template() {
               </Button>
             </li>
             <li>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button variant="ghost" className="w-full justify-start"
+              onClick={() => setSelectedComponent("Company-Config")}>
                 <Cog className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" />
                 Configurations
               </Button>
@@ -123,14 +130,14 @@ export default function Template() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="bg-white border-b p-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="" className="p-1">
+                  <BreadcrumbLink href="/company" className="p-1">
                     <div className="w-8 h-8 bg-blue-600 text-white font-semibold flex items-center justify-center rounded-[1.58]">
                       {emptyCompanyName}
                     </div>
@@ -198,9 +205,9 @@ export default function Template() {
             </DropdownMenu>
           </div>
         </header>
-
+        <div className="overflow-y-auto custom-scrollbar">
         {renderComponent()}
-
+        </div>
       </div>
     </div>
   )

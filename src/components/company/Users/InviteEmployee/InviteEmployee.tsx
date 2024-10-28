@@ -8,7 +8,7 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog";
 import { useState } from "react";
-import { UserPlus } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,13 +17,25 @@ export default function InviteEmployee() {
 
     const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleInvite = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Here you would typically send the invitation to the backend
-        console.log(`Invitation sent to ${inviteEmail}`);
-        setInviteEmail("");
-        setIsInviteDialogOpen(false);
+    const handleInvite = async (event: React.FormEvent) => {
+        event.preventDefault()
+        setIsLoading(true)
+        setInviteEmail("")
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000)) // Simula 2 segundos de delay
+
+            setIsInviteDialogOpen(false);
+            setIsLoading(false)
+            
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          } catch (error) {
+          } finally {
+            
+          } 
+  
     };
 
     return (
@@ -58,10 +70,20 @@ export default function InviteEmployee() {
                         className="col-span-3"
                         required
                       />
+                    
                     </div>
-                  </div>
+                  </div>        
                   <DialogFooter>
-                    <Button className="bg-[#111111] text-[#FFFFFF]" type="submit">Enviar Convite</Button>
+                    <Button className="bg-[#111111] text-[#FFFFFF]" type="submit">
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Enviando convite...
+                            </>
+                        ) : (
+                            'Enviar Convite'
+                        )}
+                    </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>

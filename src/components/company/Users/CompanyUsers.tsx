@@ -16,11 +16,11 @@ import { Search } from "lucide-react";
 import { employees } from "@/data/employees";
 import { FormatLogoIfNoImage } from "../../../../utils/Formataion";
 import InviteEmployee from "./InviteEmployee/InviteEmployee";
+import { motion } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CompanyUsers() {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  
 
   const filteredEmployees = employees.filter(
     (employee) =>
@@ -31,14 +31,18 @@ export default function CompanyUsers() {
   );
 
   return (
-    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-      <div className="ml-6 mr-6 bg-white shadow rounded-lg">
-        <div className="container mx-auto p-6">
-          <h1 className="ml-2 mr-2 pl-2 text-2xl font-bold mb-4">Painel de Usuários</h1>
-          <p className="ml-2 mr-2 pl-2 pb-8 text-sm text-[#9FA1A6]">
-            You are viewing the total number of orders placed so far
-          </p>
-
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto py-6 px-4 sm:px-6 lg:px-8"
+    >
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Painel de Usuários</CardTitle>
+          <p className="text-sm text-[#9FA1A6]">You are viewing the total number of orders placed so far</p>
+        </CardHeader>
+        <CardContent>
           <div className="flex justify-between items-center mb-6">
             <div className="relative">
               <Input
@@ -87,8 +91,8 @@ export default function CompanyUsers() {
               </TableBody>
             </Table>
           </div>
-        </div>
-      </div>
-    </main>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
